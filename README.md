@@ -29,13 +29,17 @@ These code chunks can be put into the pipeline where the pre-trained model is ap
 
 ## Acknowledgment
 Thank the following works for providing the original repository to facilitate the collection of the data sets required for this paper. At the same time, we gave the address of the raw datasets depository.
+
 Datasets Devign and BigCloneBench for code vulnerability detection and code clone detection
 Devign: https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Defect-detection
 and the raw dataset comes from the paper Devign: Effective Vulnerability Identification by Learning Comprehensive Program Semantics via Graph Neural Networks. 
+
 Datasets CWE119 and CWE399: https://github.com/CGCL-codes/VulDeePecker
 and these two datasets come from the paper Vuldeepecker: A deep learning-based system for vulnerability detection.
+
 BigCloneBench: https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Clone-detection-BigCloneBench
 and the raw dataset comes from the paper Detecting Code Clones with Graph Neural Network and Flow-Augmented Abstract Syntax Tree.
+
 Datasets openstack, qt, platform, gerrit, and go for just-in-time defect prediction: https://github.com/ZZR0/ISSTA21-JIT-DP
 and the raw dataset comes from the paper Deep just-in-time defect prediction: how far are we?
 
