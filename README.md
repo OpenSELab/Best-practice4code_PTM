@@ -32,7 +32,7 @@ Thank the following works for providing the original repository to facilitate th
 
 Datasets Devign and BigCloneBench for code vulnerability detection and code clone detection
 Devign: https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Defect-detection
-and the raw dataset comes from the paper Devign: Effective Vulnerability Identification by Learning Comprehensive Program Semantics via Graph Neural Networks. 
+and the raw dataset comes from the paper <br>Devign: Effective Vulnerability Identification by Learning Comprehensive Program Semantics via Graph Neural Networks.</br>
 
 Datasets CWE119 and CWE399: https://github.com/CGCL-codes/VulDeePecker
 and these two datasets come from the paper Vuldeepecker: A deep learning-based system for vulnerability detection.
