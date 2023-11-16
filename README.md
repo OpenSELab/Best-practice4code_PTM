@@ -3,20 +3,27 @@
 ## Datasets
 We first give the datasets under the datasets folder shown above, these datasets were processed well by previous researchers.
 
-#Code Pre-trained Models
+## Code Pre-trained Models
 The code pre-trained models used in this paper are all come from HuggingFace, we give the links to download them:
+
 CodeBERT-base: https://huggingface.co/microsoft/codebert-base
+
 CodeT5-base: https://huggingface.co/Salesforce/codet5-base
+
 PLBART-csnet: https://huggingface.co/uclanlp/plbart-csnet
+
 CodeGPT: https://huggingface.co/microsoft/CodeGPT-small-py-adaptedGPT2
+
 CodeGen-base: https://huggingface.co/Salesforce/codegen-350M-mono
 
 We do not give the models shown above since it is too large and easy to obtain.
 
 
-#Different Embedding Ways
+## Different Embedding Ways
 The embedding method can be found in detail in the paper, and this step can be easily implemented. 
+
 We provide code blocks to obtain embeddings by special tokens and average-pooling all codes tokens. 
+
 These code chunks can be put into the pipeline where the pre-trained model is applied to downstream tasks (e.g., the pipeline provided by CodeXGLUE) to obtain code embeddings, provided that the model parameters are first frozen.
 
 
