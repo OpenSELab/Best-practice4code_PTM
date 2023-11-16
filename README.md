@@ -27,13 +27,8 @@ We provide code blocks to obtain embeddings by special tokens and average-poolin
 These code chunks can be put into the pipeline where the pre-trained model is applied to downstream tasks (e.g., the pipeline provided by CodeXGLUE) to obtain code embeddings, provided that the model parameters are first frozen.
 
 
-
-
-
-
-
-#Finally 
-We first give links to the datasets used in this paper which are collected from the open-source repository.
+## Acknowledgment
+Thank the following works for providing the original repository to facilitate the collection of the data sets required for this paper. At the same time, we gave the address of the raw datasets depository.
 Datasets Devign and BigCloneBench for code vulnerability detection and code clone detection
 Devign: https://github.com/microsoft/CodeXGLUE/tree/main/Code-Code/Defect-detection
 and the raw dataset comes from the paper Devign: Effective Vulnerability Identification by Learning Comprehensive Program Semantics via Graph Neural Networks. 
