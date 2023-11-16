@@ -26,61 +26,56 @@ We provide code blocks to obtain embeddings by special tokens and average-poolin
 
 These code chunks can be put into the pipeline where the pre-trained model is applied to downstream tasks (e.g., the pipeline provided by CodeXGLUE) to obtain code embeddings, provided that the model parameters are first frozen.
 
+We assume that the hidden_states of the last layer of the model have been obtained, and the shape may be [batch_size, input_length, dimention].
 
-       
-    #Mean Pooling - Take attention mask into account for correct averaging
-    def mean_pooling(self, token_embeddings, attention_mask):
-          #token_embeddings = model_output[0] #First element of model_output contains all token embeddings
-          print("token_embeddings1-",np.shape(token_embeddings),token_embeddings) #1,7,384
-          print("attention_mask1-",np.shape(attention_mask),attention_mask) #1,7,384
-          token_embeddings = token_embeddings[:, 1:, :] #去除CLS标记
-          attention_mask = attention_mask[:, 1:] #去除CLS标记对应的注意力
-          print("token_embeddings2-",np.shape(token_embeddings),token_embeddings) #1,7,384
-          print("attention_mask2-",np.shape(attention_mask),attention_mask) #1,7,384
-          # 将每一行的最后一个 True 改为 False 这是对应SEP的注意力
-          for row in attention_mask:
-               last_true_index = (row == True).nonzero(as_tuple=True)[0][-1]
-               row[last_true_index] = False
-          print("attention_mask3-",np.shape(attention_mask),attention_mask) #1,7,384
+### 1-encoder-only
+Then we can use the next code blocks to get embedding of the first token of encoder-only pre-trained model, for example special token [CLS] of CodeBERT, The premise is that the padding method is the right padding.
 
-          input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
-          return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+first_special_token_embedding = hidden_states[:,0,:]  # The shape may be [batch_size, dimention]
+
+### 2-encoder-only
+We can use the next code blocks to get embedding of all code tokens of encoder-only pre-trained model, The premise is that the padding method is the right padding.
+
+hidden_states = hidden_states[:, 1:, :] # Remove the vector representation corresponding to the first_special_token
+attention_mask = attention_mask[:, 1:] # Remove the attention corresponding to the first_special_token
+for row in attention_mask:
+    last_true_index = (row == True).nonzero(as_tuple=True)[0][-1]
+    row[last_true_index] = False # Set attention to the last special token to False
+input_mask_expanded = attention_mask.unsqueeze(-1).expand(hidden_states.size()).float()
+all_code_token_embedding = torch.sum(hidden_states * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9) # The shape may be [batch_size, dimention]
+  
+
+### 1-decoder-only
+We can use the next code blocks to get embedding of the last token of decoder-only pre-trained model, The premise is that the padding method is the left padding.
+
+first_special_token_embedding = hidden_states[:,-1,:]  # The shape may be [batch_size, dimention]
+
+### 2-decoder-only
+We can use the next code blocks to get embedding of all code tokens of decoder-only pre-trained model, The premise is that the padding method is the left padding.
+
+hidden_states = hidden_states[:,:-1,:] # Remove the vector representation corresponding to the last special token
+attention_mask = attention_mask[:,:-1] # Remove the attention corresponding to the last special token
+input_mask_expanded = attention_mask.unsqueeze(-1).expand(hidden_states.size()).float()
+all_code_token_embedding = torch.sum(hidden_states * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9) # The shape may be [batch_size, dimention]
 
 
-        #x_commit = self.sentence_encoder(input_ids = input_ids, attention_mask=input_ids.ne(1))[0][:,0,:]
+### 1-encoder-decoder
+We can use the next code blocks to get embedding of the first token of encoder-decoder pre-trained model, The premise is that the padding method is the right padding.
+first_special_token_embedding = hidden_states[:,0,:]  # The shape may be [batch_size, dimention]
 
-
-        #x_commit = self.sentence_encoder(input_ids = input_ids, attention_mask=input_ids.ne(1))[0][:,-1,:] #最后一个标记上的内容
-#Mean Pooling - Take attention mask into account for correct averaging
-    def mean_pooling(self, token_embeddings, attention_mask):
-          #token_embeddings = model_output[0] #First element of model_output contains all token embeddings
-          print("token_embeddings1-",np.shape(token_embeddings),token_embeddings) #1,7,384
-          print("attention_mask1-",np.shape(attention_mask),attention_mask) #1,7,384
-          token_embeddings = token_embeddings[:,:-1,:]
-          attention_mask = attention_mask[:,:-1]
-          print("token_embeddings2-",np.shape(token_embeddings),token_embeddings) #1,7,384
-          print("attention_mask2-",np.shape(attention_mask),attention_mask) #1,7,384
-          input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
-          print("input_mask_expanded -",np.shape(input_mask_expanded ),input_mask_expanded ) #1,7,384
-          return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-       
-
-        #######bos+eos########
-        print(np.shape(hidden_states))
-        print(hidden_states)
-        #bos => eos 互换分别得到第一个和最后一个 这一行代码创建了一个名为 eos_mask 的布尔型张量，用于指示哪些位置包含了T5的结束标记（<eos>）。这是通过检查输入 source_ids 是否等于T5配置中的结束标记ID来实现的。
-        eos_mask = source_ids.eq(self.sentence_encoder.config.eos_token_id)
-        print(np.shape(eos_mask))
-        print(eos_mask)
-        if len(torch.unique(eos_mask.sum(1))) > 1:
-           raise ValueError("All examples must have the same number of <eos> tokens.")
-
-        #这一行代码根据 eos_mask 从隐藏状态中选择包含结束标记的位置，然后将这些位置的隐藏状态合并成一个向量。最后的结果是一个二维张量，每一行对应一个输入示例，每一行中的向量是该示例的编码表示。
-        x_commit = hidden_states[eos_mask, :].view(hidden_states.size(0), -1, hidden_states.size(-1))[:, -1, :]
-        print(np.shape(x_commit))
-        print(x_commit)
-        #######bos+eos########
-
+### 2-encoder-decoder
+We can use the next code blocks to get embedding of the last token of encoder-decoder pre-trained model, The premise is that the padding method is the right padding.
+last_special_token_embedding = hidden_states[input_ids.eq(model.config.eos_token_id), :].view(hidden_states.size(0), -1, hidden_states.size(-1))[:, -1, :] # Select the location containing the special token from the hidden state based on the special token id
+        
+### 3-encoder-decoder
+We can use the next code blocks to get embedding of all code tokens of encoder-decoder pre-trained model, The premise is that the padding method is the right padding.
+hidden_states = hidden_states[:, 1:, :] # Remove the vector representation corresponding to the first_special_token
+attention_mask = attention_mask[:, 1:] # Remove the attention corresponding to the first_special_token
+for row in attention_mask:
+    last_true_index = (row == True).nonzero(as_tuple=True)[0][-1]
+    row[last_true_index] = False # Set attention to the last special token to False
+input_mask_expanded = attention_mask.unsqueeze(-1).expand(hidden_states.size()).float()
+all_code_token_embedding = torch.sum(hidden_states * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9) # The shape may be [batch_size, dimention]
 
         
 
