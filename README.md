@@ -3,13 +3,13 @@
 ## Generalizability Results
 We used the corpus shared by [Fakhoury et al.](https://ieeexplore.ieee.org/abstract/document/8330265) to conduct experiments on the code smell identification task to support the generalization. The code smells in this corpus come from the use of misleading identifier names or violations of common naming conventions. Due to time constraints, we only conducted partial experiments on three code PTMs covering all three architectures in the task model scenario. The experimental results are shown in the table below. It can be found that the conclusions of this paper i.e., focusing on the vector representation of each code token leads to better code embedding than specific tokens, still **hold true** for the code smell identification task, which shows the generalizability of our conclusions.
 
-# Table 1: Evaluation results on the test set of code smell identification tasks in the task model scenario, where F, L, A and M respectively represent the performance of the fine-tuned code PTMs using embedding ways of the first special token, the last special token, the average-pooling and the max-pooling of all code tokens. The bold value indicates the optimal performance value under the same code PTM.
-|     Metric    |         |       CodeBERT       |              |         |              |      CodeT5        |              |         |           CodeGPT   |              |
-|:-------------:|:---------------:|:------------:|:------------:|:-------------:|:------------:|:------------:|:------------:|:--------------:|:------------:|:------------:|
-|               |         F       |       A      |       M      |        F      |       L      |       A      |       M      |        L       |       A      |       M      |
-|       Acc     |       0.737     |     0.751    |     0.677    |      0.700    |     0.680    |     0.722    |     0.697    |      0.597     |     0.666    |     0.606    |
-|       F1      |       0.685     |     0.695    |     0.669    |      0.660    |     0.559    |     0.673    |     0.616    |      0.515     |     0.589    |     0.546    |
-|       MCC     |       0.471     |     0.503    |     0.358    |      0.394    |     0.366    |     0.440    |     0.392    |      0.180     |     0.323    |     0.201    |
+Table 1: Evaluation results on the test set of code smell identification tasks in the task model scenario, where F, L, A and M respectively represent the performance of the fine-tuned code PTMs using embedding ways of the first special token, the last special token, the average-pooling and the max-pooling of all code tokens. The bold value indicates the optimal performance value under the same code PTM.
+|   Metric   |              |     CodeBERT     |              |              |    CodeT5    |                  |              |              |      CodeGPT     |              |
+|:----------:|:------------:|:----------------:|:------------:|:------------:|:------------:|:----------------:|:------------:|:------------:|:----------------:|:------------:|
+|            |       F      |         A        |       M      |       F      |       L      |         A        |       M      |       L      |         A        |       M      |
+|     Acc    |     0.737    | **    0.751   ** |     0.677    |     0.700    |     0.680    | **    0.722   ** |     0.697    |     0.597    | **    0.666   ** |     0.606    |
+|      F1    |     0.685    | **    0.695   ** |     0.669    |     0.660    |     0.559    | **    0.673   ** |     0.616    |     0.515    | **    0.589   ** |     0.546    |
+|     MCC    |     0.471    | **    0.503   ** |     0.358    |     0.394    |     0.366    | **    0.440   ** |     0.392    |     0.180    | **    0.323   ** |     0.201    |
 
 **感谢您的支持！**
 
